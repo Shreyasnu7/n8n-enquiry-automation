@@ -1,0 +1,85 @@
+{
+  "id": "NPerrors00000001",
+  "name": "3. Alert when a workflow fails",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "caca6d88-2b3a-5b63-b5b0-019ebbe8014c",
+      "name": "When any workflow fails",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Turns n8n's error report into a short message someone can act on.\nconst e = $json.execution ?? {};\nconst wf = $json.workflow ?? {};\nreturn [{ json: {\n  subject: `n8n: \"${wf.name ?? 'a workflow'}\" failed at \"${e.lastNodeExecuted ?? 'unknown step'}\"`,\n  html: `<div style=\"font:14px/1.5 Arial,sans-serif\">\n    <p>The workflow <b>${wf.name}</b> stopped at <b>${e.lastNodeExecuted ?? '?'}</b>.</p>\n    <p style=\"background:#f6f6f6;padding:8px;font-family:monospace\">${String(e.error?.message ?? 'no message').replace(/</g, '&lt;')}</p>\n    <p>${e.url ? `<a href=\"${e.url}\">Open the failed execution</a>` : `Execution ${e.id ?? ''}`} &middot; mode: ${e.mode ?? ''}</p></div>` } }];"
+      },
+      "id": "7d94890d-8d8e-527c-ae35-1da399555418",
+      "name": "Describe the failure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Northside Physio <enquiries@northsidephysio.example>",
+        "toEmail": "automation-alerts@northsidephysio.example",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "1f508f5f-bb11-5d2c-8623-55e43b2d8470",
+      "name": "Email the developer",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        440,
+        0
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "npSmtpAlerts0001",
+          "name": "Alerts SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When any workflow fails": {
+      "main": [
+        [
+          {
+            "node": "Describe the failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Describe the failure": {
+      "main": [
+        [
+          {
+            "node": "Email the developer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

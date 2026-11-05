@@ -1,0 +1,415 @@
+{
+  "id": "NPintake00000001",
+  "name": "1. Website enquiry intake",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Melbourne",
+    "saveManualExecutions": true,
+    "errorWorkflow": "NPerrors00000001",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "enquiry",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://northsidephysio.example"
+        }
+      },
+      "id": "91696b76-aa05-5fbd-acba-6020a16716fd",
+      "name": "Website form",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "b1d6c0de-4e7a-4c2e-9a3e-5a1f0e2d7c11"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// One website enquiry in, one cleaned-up lead (or the reasons it can't be accepted) out.\nconst b = $json.body ?? {};\nconst clean = s => String(s ?? '').trim().replace(/\\s+/g, ' ');\n\n// A hidden field people never see. Bots fill it in; they get a normal \"thanks\" and nothing is stored.\nif (clean(b.website)) return { json: { outcome: 'spam' } };\n\nconst errors = [];\nconst name = clean(b.name);\nconst email = clean(b.email).toLowerCase();\nconst service = clean(b.service).toLowerCase();\nconst message = String(b.message ?? '').trim().slice(0, 2000);\n\nif (name.length < 2) errors.push('Please tell us your name.');\nif (!/^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$/i.test(email)) errors.push(\"That email address doesn't look right.\");\n\n// Australian numbers in any common format: 0412 345 678, +61 412 345 678, (03) 9387 1234.\nlet phone = String(b.phone ?? '').replace(/[^\\d+]/g, '');\nif (phone.startsWith('+61')) phone = '0' + phone.slice(3);\nelse if (phone.startsWith('61') && phone.length === 11) phone = '0' + phone.slice(2);\nif (phone && !/^0[2-478]\\d{8}$/.test(phone)) errors.push('Please give an Australian phone number, like 0412 345 678.');\nif (!phone) errors.push('Please give a phone number so we can call you back.');\n\nconst SERVICES = { 'physiotherapy': 'Physiotherapy', 'sports injury': 'Sports injury', 'clinical pilates': 'Clinical Pilates',\n                   'remedial massage': 'Remedial massage', 'ndis': 'NDIS physiotherapy' };\nif (!SERVICES[service]) errors.push('Please choose a service.');\nif (b.consent !== true && b.consent !== 'true' && b.consent !== 'on') errors.push('Please agree to us contacting you about this enquiry.');\n\n// Words that mean a person should call back today rather than in the normal queue.\nconst urgent = /\\b(urgent|severe|can'?t (walk|move|sleep|bend)|numb(ness)?|swollen|swelling|fell|fall)\\b/i.test(message);\n\nif (errors.length) return { json: { outcome: 'invalid', errors } };\nreturn { json: { outcome: 'ok', lead: {\n  name, email,\n  phone: phone.replace(/^(04\\d{2})(\\d{3})(\\d{3})$/, '$1 $2 $3').replace(/^(0[2378])(\\d{4})(\\d{4})$/, '($1) $2 $3'),\n  phone_e164: '+61' + phone.slice(1),\n  service: SERVICES[service],\n  message,\n  preferred_time: clean(b.preferred_time) || 'Any time',\n  priority: urgent ? 'urgent' : 'normal',\n} } };"
+      },
+      "id": "cef4abc5-cf76-5ba3-b479-fb3f2413b790",
+      "name": "Validate and tidy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "rule-ok",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "ok",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ok"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "rule-invalid",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "invalid",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "invalid"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "rule-spam",
+                    "leftValue": "={{ $json.outcome }}",
+                    "rightValue": "spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "spam"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "668376cd-db31-5afe-8465-8f463c79fc38",
+      "name": "Route",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "enquiries"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "email",
+              "condition": "eq",
+              "keyValue": "={{ $json.lead.email }}"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "id": "4b32d0aa-e520-5521-ba27-5904a1612adc",
+      "name": "Earlier enquiries from this email",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        60
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Has this person enquired before? Earlier rows come from the data table lookup (none = one empty item).\nconst lead = $('Validate and tidy').first().json.lead;\nconst earlier = $input.all().map(i => i.json).filter(r => r.email);\nconst weekAgo = Date.now() - 7 * 24 * 3600 * 1000;\nconst recent = earlier.filter(r => new Date(r.received_at ?? r.createdAt).getTime() > weekAgo);\nconst now = new Date();\nconst today = now.toLocaleDateString('en-CA', { timeZone: 'Australia/Melbourne' });     // 2026-10-28, the clinic's date\nconst reference = 'NP-' + today.slice(2).replace(/-/g, '') + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();\nreturn [{ json: { reference, received_at: now.toISOString(), ...lead,\n                  repeat: recent.length > 0, previous_enquiries: earlier.length, status: 'new' } }];"
+      },
+      "id": "304aa220-3466-5925-b5ac-6f19532b465c",
+      "name": "Check for earlier enquiries",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "enquiries"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "bea54989-76b1-5e34-be3c-1cd8651ecfe6",
+      "name": "Save enquiry",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Northside Physio <enquiries@northsidephysio.example>",
+        "toEmail": "frontdesk@northsidephysio.example",
+        "subject": "={{ ($('Check for earlier enquiries').first().json.priority === 'urgent' ? '[URGENT] ' : '') + 'New enquiry: ' + $('Check for earlier enquiries').first().json.name + ', ' + $('Check for earlier enquiries').first().json.service }}",
+        "emailFormat": "html",
+        "html": "={{ (() => {\n  const l = $('Check for earlier enquiries').first().json;\n  const esc = s => String(s ?? '').replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\n  const flag = l.priority === 'urgent' ? '<p style=\"background:#fbe3dc;color:#8f2410;padding:8px 10px;border-radius:4px\"><b>Urgent:</b> the message mentions symptoms that need a call back today.</p>' : '';\n  const rep = l.repeat ? `<p style=\"background:#f6ecd4;color:#7a5200;padding:8px 10px;border-radius:4px\">Has enquired ${l.previous_enquiries} time(s) before, at least once in the last week.</p>` : '';\n  return `<div style=\"font:14px/1.5 Arial,sans-serif;color:#222;max-width:560px\">${flag}${rep}\n  <table style=\"border-collapse:collapse\">\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Reference</td><td><b>${esc(l.reference)}</b></td></tr>\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Name</td><td>${esc(l.name)}</td></tr>\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Phone</td><td><a href=\"tel:${esc(l.phone_e164)}\">${esc(l.phone)}</a></td></tr>\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Email</td><td>${esc(l.email)}</td></tr>\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Service</td><td>${esc(l.service)}</td></tr>\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Best time</td><td>${esc(l.preferred_time)}</td></tr></table>\n  <p style=\"white-space:pre-wrap;border-left:3px solid #ccc;padding-left:10px\">${esc(l.message)}</p></div>`;\n})() }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a53bf31f-dde7-543d-83e3-7c513a816e5c",
+      "name": "Email the front desk",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1560,
+        60
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "npSmtpLocal00001",
+          "name": "Clinic SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "Northside Physio <enquiries@northsidephysio.example>",
+        "toEmail": "={{ $('Check for earlier enquiries').first().json.email }}",
+        "subject": "={{ 'We got your enquiry (' + $('Check for earlier enquiries').first().json.reference + ')' }}",
+        "emailFormat": "html",
+        "html": "={{ (() => {\n  const l = $('Check for earlier enquiries').first().json;\n  const esc = s => String(s ?? '').replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\n  const when = l.priority === 'urgent' ? 'today' : 'within one business day';\n  return `<div style=\"font:15px/1.6 Arial,sans-serif;color:#222;max-width:520px\">\n  <p>Hi ${esc(l.name.split(' ')[0])},</p>\n  <p>Thanks for getting in touch about ${esc(l.service.toLowerCase())}. One of our team will call you on ${esc(l.phone)} ${when}.</p>\n  <p>Your reference is <b>${esc(l.reference)}</b>.</p>\n  <p>If your pain gets much worse, or you have new numbness or weakness, please see your GP or call 000 in an emergency.</p>\n  <p>Northside Physio<br>212 Sydney Rd, Brunswick VIC 3056 &middot; (03) 9387 1234</p></div>`;\n})() }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "6fe29508-bada-5917-a0f6-8a242c62c36b",
+      "name": "Email the patient",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1780,
+        60
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "npSmtpLocal00001",
+          "name": "Clinic SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reference: $('Check for earlier enquiries').first().json.reference }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "08fee959-12b3-5ff1-8123-6466b722b699",
+      "name": "Reply: received",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1340,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, errors: $json.errors }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "8fe22d0e-682c-5104-88b6-acf1a1dac554",
+      "name": "Reply: fix these",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        680,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "35a97e5d-4cb9-5790-8fab-68e7c7eab5e3",
+      "name": "Reply: thanks (spam, not stored)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        680,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Website form": {
+      "main": [
+        [
+          {
+            "node": "Validate and tidy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and tidy": {
+      "main": [
+        [
+          {
+            "node": "Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route": {
+      "main": [
+        [
+          {
+            "node": "Earlier enquiries from this email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply: fix these",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply: thanks (spam, not stored)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Earlier enquiries from this email": {
+      "main": [
+        [
+          {
+            "node": "Check for earlier enquiries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for earlier enquiries": {
+      "main": [
+        [
+          {
+            "node": "Save enquiry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save enquiry": {
+      "main": [
+        [
+          {
+            "node": "Reply: received",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply: received": {
+      "main": [
+        [
+          {
+            "node": "Email the front desk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email the front desk": {
+      "main": [
+        [
+          {
+            "node": "Email the patient",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

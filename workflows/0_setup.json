@@ -1,0 +1,122 @@
+{
+  "id": "NPsetup000000001",
+  "name": "0. Setup: create the enquiries table",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "setup-tables",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "edbd9705-0afd-593b-bae8-b95d24d54e68",
+      "name": "Run once",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "npAdminHeader001",
+          "name": "Automation admin key"
+        }
+      },
+      "webhookId": "7f0c2a55-1b9e-4d31-8c0a-2f6d9e4b1a01"
+    },
+    {
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "enquiries",
+        "columns": {
+          "column": [
+            {
+              "name": "reference",
+              "type": "string"
+            },
+            {
+              "name": "received_at",
+              "type": "date"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            },
+            {
+              "name": "email",
+              "type": "string"
+            },
+            {
+              "name": "phone",
+              "type": "string"
+            },
+            {
+              "name": "phone_e164",
+              "type": "string"
+            },
+            {
+              "name": "service",
+              "type": "string"
+            },
+            {
+              "name": "message",
+              "type": "string"
+            },
+            {
+              "name": "preferred_time",
+              "type": "string"
+            },
+            {
+              "name": "priority",
+              "type": "string"
+            },
+            {
+              "name": "repeat",
+              "type": "boolean"
+            },
+            {
+              "name": "previous_enquiries",
+              "type": "number"
+            },
+            {
+              "name": "status",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "createIfNotExists": true
+        }
+      },
+      "id": "3490871c-b16e-5abd-b274-a7f06e285142",
+      "name": "Create enquiries table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Run once": {
+      "main": [
+        [
+          {
+            "node": "Create enquiries table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

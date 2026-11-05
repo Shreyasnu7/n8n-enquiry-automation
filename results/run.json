@@ -1,0 +1,301 @@
+{
+  "enquiries": [
+    {
+      "label": "new patient, back pain",
+      "status": 200,
+      "response": {
+        "ok": true,
+        "reference": "NP-261028-TRNH"
+      },
+      "emails": [
+        {
+          "to": [
+            "frontdesk@northsidephysio.example"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "New enquiry: Priya Nair, Physiotherapy",
+          "html": "<div style=\"font:14px/1.5 Arial,sans-serif;color:#222;max-width:560px\">\r\n\r\n  <table style=\"border-collapse:collapse\">\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Reference</td><td><b>NP-261028-TRNH</b></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Name</td><td>Priya Nair</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Phone</td><td><a href=\"tel:+61412345678\">0412 345 678</a></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Email</td><td>priya.nair@gmail.com</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Service</td><td>Physiotherapy</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Best time</td><td>Weekday mornings</td></tr></table>\r\n\r\n  <p style=\"white-space:pre-wrap;border-left:3px solid #ccc;padding-left:10px\">Lower back has been stiff since gardening on the weekend. Fine to walk, just sore bending.</p></div>\r\n"
+        },
+        {
+          "to": [
+            "priya.nair@gmail.com"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "We got your enquiry (NP-261028-TRNH)",
+          "html": "<div style=\"font:15px/1.6 Arial,sans-serif;color:#222;max-width:520px\">\r\n\r\n  <p>Hi Priya,</p>\r\n\r\n  <p>Thanks for getting in touch about physiotherapy. One of our team will call you on 0412 345 678 within one business day.</p>\r\n\r\n  <p>Your reference is <b>NP-261028-TRNH</b>.</p>\r\n\r\n  <p>If your pain gets much worse, or you have new numbness or weakness, please see your GP or call 000 in an emergency.</p>\r\n\r\n  <p>Northside Physio<br>212 Sydney Rd, Brunswick VIC 3056 &middot; (03) 9387 1234</p></div>\r\n"
+        }
+      ]
+    },
+    {
+      "label": "sports injury, urgent words",
+      "status": 200,
+      "response": {
+        "ok": true,
+        "reference": "NP-261028-5F8U"
+      },
+      "emails": [
+        {
+          "to": [
+            "frontdesk@northsidephysio.example"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "[URGENT] New enquiry: Tom O'Brien, Sports injury",
+          "html": "<div style=\"font:14px/1.5 Arial,sans-serif;color:#222;max-width:560px\"><p style=\"background:#fbe3dc;color:#8f2410;padding:8px 10px;border-radius:4px\"><b>Urgent:</b> the message mentions symptoms that need a call back today.</p>\r\n\r\n  <table style=\"border-collapse:collapse\">\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Reference</td><td><b>NP-261028-5F8U</b></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Name</td><td>Tom O'Brien</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Phone</td><td><a href=\"tel:+61423555019\">0423 555 019</a></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Email</td><td>tom.obrien@outlook.com</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Service</td><td>Sports injury</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Best time</td><td>ASAP</td></tr></table>\r\n\r\n  <p style=\"white-space:pre-wrap;border-left:3px solid #ccc;padding-left:10px\">Rolled my ankle at netball last night. It's very swollen and I can't walk on it properly.</p></div>\r\n"
+        },
+        {
+          "to": [
+            "tom.obrien@outlook.com"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "We got your enquiry (NP-261028-5F8U)",
+          "html": "<div style=\"font:15px/1.6 Arial,sans-serif;color:#222;max-width:520px\">\r\n\r\n  <p>Hi Tom,</p>\r\n\r\n  <p>Thanks for getting in touch about sports injury. One of our team will call you on 0423 555 019 today.</p>\r\n\r\n  <p>Your reference is <b>NP-261028-5F8U</b>.</p>\r\n\r\n  <p>If your pain gets much worse, or you have new numbness or weakness, please see your GP or call 000 in an emergency.</p>\r\n\r\n  <p>Northside Physio<br>212 Sydney Rd, Brunswick VIC 3056 &middot; (03) 9387 1234</p></div>\r\n"
+        }
+      ]
+    },
+    {
+      "label": "form filled in wrong",
+      "status": 422,
+      "response": {
+        "ok": false,
+        "errors": [
+          "Please tell us your name.",
+          "That email address doesn't look right.",
+          "Please give an Australian phone number, like 0412 345 678.",
+          "Please choose a service.",
+          "Please agree to us contacting you about this enquiry."
+        ]
+      },
+      "emails": []
+    },
+    {
+      "label": "bot (hidden field filled)",
+      "status": 200,
+      "response": {
+        "ok": true
+      },
+      "emails": []
+    },
+    {
+      "label": "same patient asks again",
+      "status": 200,
+      "response": {
+        "ok": true,
+        "reference": "NP-261028-L4ZU"
+      },
+      "emails": [
+        {
+          "to": [
+            "frontdesk@northsidephysio.example"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "New enquiry: Priya Nair, Remedial massage",
+          "html": "<div style=\"font:14px/1.5 Arial,sans-serif;color:#222;max-width:560px\"><p style=\"background:#f6ecd4;color:#7a5200;padding:8px 10px;border-radius:4px\">Has enquired 1 time(s) before, at least once in the last week.</p>\r\n\r\n  <table style=\"border-collapse:collapse\">\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Reference</td><td><b>NP-261028-L4ZU</b></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Name</td><td>Priya Nair</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Phone</td><td><a href=\"tel:+61412345678\">0412 345 678</a></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Email</td><td>priya.nair@gmail.com</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Service</td><td>Remedial massage</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Best time</td><td>Any time</td></tr></table>\r\n\r\n  <p style=\"white-space:pre-wrap;border-left:3px solid #ccc;padding-left:10px\">Also wondering if you have massage appointments on Saturdays?</p></div>\r\n"
+        },
+        {
+          "to": [
+            "priya.nair@gmail.com"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "We got your enquiry (NP-261028-L4ZU)",
+          "html": "<div style=\"font:15px/1.6 Arial,sans-serif;color:#222;max-width:520px\">\r\n\r\n  <p>Hi Priya,</p>\r\n\r\n  <p>Thanks for getting in touch about remedial massage. One of our team will call you on 0412 345 678 within one business day.</p>\r\n\r\n  <p>Your reference is <b>NP-261028-L4ZU</b>.</p>\r\n\r\n  <p>If your pain gets much worse, or you have new numbness or weakness, please see your GP or call 000 in an emergency.</p>\r\n\r\n  <p>Northside Physio<br>212 Sydney Rd, Brunswick VIC 3056 &middot; (03) 9387 1234</p></div>\r\n"
+        }
+      ]
+    },
+    {
+      "label": "landline, NDIS",
+      "status": 200,
+      "response": {
+        "ok": true,
+        "reference": "NP-261028-KB9K"
+      },
+      "emails": [
+        {
+          "to": [
+            "frontdesk@northsidephysio.example"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "New enquiry: Margaret Kelly, NDIS physiotherapy",
+          "html": "<div style=\"font:14px/1.5 Arial,sans-serif;color:#222;max-width:560px\">\r\n\r\n  <table style=\"border-collapse:collapse\">\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Reference</td><td><b>NP-261028-KB9K</b></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Name</td><td>Margaret Kelly</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Phone</td><td><a href=\"tel:+61393875521\">(03) 9387 5521</a></td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Email</td><td>m.kelly@bigpond.com</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Service</td><td>NDIS physiotherapy</td></tr>\r\n\r\n  <tr><td style=\"color:#666;padding:3px 12px 3px 0\">Best time</td><td>After 3:30 pm</td></tr></table>\r\n\r\n  <p style=\"white-space:pre-wrap;border-left:3px solid #ccc;padding-left:10px\">Calling for my son who has an NDIS plan with therapy funding. Looking for fortnightly sessions.</p></div>\r\n"
+        },
+        {
+          "to": [
+            "m.kelly@bigpond.com"
+          ],
+          "from": "Northside Physio <enquiries@northsidephysio.example>",
+          "subject": "We got your enquiry (NP-261028-KB9K)",
+          "html": "<div style=\"font:15px/1.6 Arial,sans-serif;color:#222;max-width:520px\">\r\n\r\n  <p>Hi Margaret,</p>\r\n\r\n  <p>Thanks for getting in touch about ndis physiotherapy. One of our team will call you on (03) 9387 5521 within one business day.</p>\r\n\r\n  <p>Your reference is <b>NP-261028-KB9K</b>.</p>\r\n\r\n  <p>If your pain gets much worse, or you have new numbness or weakness, please see your GP or call 000 in an emergency.</p>\r\n\r\n  <p>Northside Physio<br>212 Sydney Rd, Brunswick VIC 3056 &middot; (03) 9387 1234</p></div>\r\n"
+        }
+      ]
+    }
+  ],
+  "digest": {
+    "status": 200,
+    "emails": [
+      {
+        "to": [
+          "practice.manager@northsidephysio.example"
+        ],
+        "from": "Northside Physio <enquiries@northsidephysio.example>",
+        "subject": "4 new enquiries (1 urgent): Wednesday 28 October",
+        "html": "<div style=\"font:14px/1.5 Arial,sans-serif;color:#222\">\r\n  <p><b>4</b> new enquiries since Tue 8:00 am, <b style=\"color:#8f2410\">1 urgent</b>.</p>\r\n  <p>Physiotherapy: 1 &middot; Sports injury: 1 &middot; Remedial massage: 1 &middot; NDIS physiotherapy: 1</p>\r\n  <table style=\"border-collapse:collapse;border:1px solid #ddd\"><tr style=\"background:#f3f3f3\"><th style=\"padding:4px 8px;text-align:left\">Received</th><th style=\"padding:4px 8px;text-align:left\">Name</th><th style=\"padding:4px 8px;text-align:left\">Phone</th><th style=\"padding:4px 8px;text-align:left\">Service</th><th></th></tr><tr>\r\n  <td style=\"padding:4px 8px\">Wed 3:00 am</td><td style=\"padding:4px 8px\">Priya Nair</td>\r\n  <td style=\"padding:4px 8px\">0412 345 678</td><td style=\"padding:4px 8px\">Physiotherapy</td>\r\n  <td style=\"padding:4px 8px\"></td></tr><tr style=\"background:#fbe3dc\">\r\n  <td style=\"padding:4px 8px\">Wed 3:00 am</td><td style=\"padding:4px 8px\">Tom O'Brien</td>\r\n  <td style=\"padding:4px 8px\">0423 555 019</td><td style=\"padding:4px 8px\">Sports injury</td>\r\n  <td style=\"padding:4px 8px\"><b>urgent</b></td></tr><tr>\r\n  <td style=\"padding:4px 8px\">Wed 3:01 am</td><td style=\"padding:4px 8px\">Priya Nair (repeat)</td>\r\n  <td style=\"padding:4px 8px\">0412 345 678</td><td style=\"padding:4px 8px\">Remedial massage</td>\r\n  <td style=\"padding:4px 8px\"></td></tr><tr>\r\n  <td style=\"padding:4px 8px\">Wed 3:01 am</td><td style=\"padding:4px 8px\">Margaret Kelly</td>\r\n  <td style=\"padding:4px 8px\">(03) 9387 5521</td><td style=\"padding:4px 8px\">NDIS physiotherapy</td>\r\n  <td style=\"padding:4px 8px\"></td></tr></table></div>\r\n"
+      }
+    ]
+  },
+  "outage": {
+    "status": 200,
+    "response": {
+      "ok": true,
+      "reference": "NP-261028-WD91"
+    },
+    "alerts": [
+      {
+        "to": [
+          "automation-alerts@northsidephysio.example"
+        ],
+        "from": "Northside Physio <enquiries@northsidephysio.example>",
+        "subject": "n8n: \"1. Website enquiry intake\" failed at \"Email the front desk\"",
+        "html": "<div style=\"font:14px/1.5 Arial,sans-serif\">\r\n    <p>The workflow <b>1. Website enquiry intake</b> stopped at <b>Email the front desk</b>.</p>\r\n    <p style=\"background:#f6f6f6;padding:8px;font-family:monospace\">The service refused the connection - perhaps it is offline</p>\r\n    <p><a href=\"http://127.0.0.1:5680/workflow/NPintake00000001/executions/9\">Open the failed execution</a> &middot; mode: webhook</p></div>\r\n"
+      }
+    ]
+  },
+  "setup": {
+    "status": 200,
+    "body": {
+      "updatedAt": "2026-10-27T16:00:51.173Z",
+      "createdAt": "2026-10-27T16:00:51.173Z",
+      "id": "UAEgTkSt0P2iSJDi",
+      "name": "enquiries",
+      "projectId": "RFusnm3LFerRNWay",
+      "project": {
+        "updatedAt": "2026-10-27T15:59:39.104Z",
+        "createdAt": "2026-10-27T15:59:39.104Z",
+        "id": "RFusnm3LFerRNWay",
+        "name": "Unnamed Project",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "24ca7abb-65e2-4ae9-a4eb-3e48300f2e7b"
+      },
+      "columns": [
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "RagRra9lqsKmrLok",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "email",
+          "type": "string",
+          "index": 3
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "AGbhNyWv5srytWSc",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "message",
+          "type": "string",
+          "index": 7
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "Uql6Px2TmhrrWJXb",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "name",
+          "type": "string",
+          "index": 2
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "1zmqBpVfy24U791S",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "phone",
+          "type": "string",
+          "index": 4
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "aIzRKwhpgWJb5ptL",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "phone_e164",
+          "type": "string",
+          "index": 5
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "sbWMXWepXV2sURZ5",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "preferred_time",
+          "type": "string",
+          "index": 8
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "gCqQnbhDzVM0IQRd",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "previous_enquiries",
+          "type": "number",
+          "index": 11
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "lX9cKbPcFl63l3lx",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "priority",
+          "type": "string",
+          "index": 9
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "4XCIR52MieI3DEHU",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "received_at",
+          "type": "date",
+          "index": 1
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "yLMZW0cXCcdgvwUa",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "reference",
+          "type": "string",
+          "index": 0
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "2lphKO7EL6AIWXKJ",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "repeat",
+          "type": "boolean",
+          "index": 10
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "YCUaxKC3iUu6jJUh",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "service",
+          "type": "string",
+          "index": 6
+        },
+        {
+          "updatedAt": "2026-10-27T16:00:51.176Z",
+          "createdAt": "2026-10-27T16:00:51.176Z",
+          "id": "tAPRvGMMt95Scx9h",
+          "dataTableId": "UAEgTkSt0P2iSJDi",
+          "name": "status",
+          "type": "string",
+          "index": 12
+        }
+      ]
+    }
+  },
+  "setup_without_key": 403
+}

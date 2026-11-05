@@ -1,0 +1,22 @@
+[
+  {"label": "new patient, back pain",
+   "form": {"name": "Priya Nair", "email": "Priya.Nair@gmail.com", "phone": "0412 345 678", "service": "Physiotherapy",
+            "message": "Lower back has been stiff since gardening on the weekend. Fine to walk, just sore bending.",
+            "preferred_time": "Weekday mornings", "consent": true}},
+  {"label": "sports injury, urgent words",
+   "form": {"name": "Tom O'Brien", "email": "tom.obrien@outlook.com", "phone": "+61 423 555 019", "service": "sports injury",
+            "message": "Rolled my ankle at netball last night. It's very swollen and I can't walk on it properly.",
+            "preferred_time": "ASAP", "consent": true}},
+  {"label": "form filled in wrong",
+   "form": {"name": "J", "email": "jess@", "phone": "1234", "service": "yoga", "message": "hi", "consent": false}},
+  {"label": "bot (hidden field filled)",
+   "form": {"name": "Best SEO", "email": "seo@rank-fast.example", "phone": "0400 000 000", "service": "physiotherapy",
+            "message": "We can get you to #1 on Google", "website": "http://rank-fast.example", "consent": true}},
+  {"label": "same patient asks again",
+   "form": {"name": "Priya Nair", "email": "priya.nair@gmail.com", "phone": "0412345678", "service": "remedial massage",
+            "message": "Also wondering if you have massage appointments on Saturdays?", "consent": "on"}},
+  {"label": "landline, NDIS",
+   "form": {"name": "Margaret Kelly", "email": "m.kelly@bigpond.com", "phone": "(03) 9387 5521", "service": "NDIS",
+            "message": "Calling for my son who has an NDIS plan with therapy funding. Looking for fortnightly sessions.",
+            "preferred_time": "After 3:30 pm", "consent": true}}
+]

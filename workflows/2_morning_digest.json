@@ -1,0 +1,166 @@
+{
+  "id": "NPdigest00000001",
+  "name": "2. Morning enquiry digest",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Australia/Melbourne",
+    "saveManualExecutions": true,
+    "errorWorkflow": "NPerrors00000001",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "7d3ed42f-cade-53b3-8901-bd502fed1ed1",
+      "name": "Weekdays 8:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "digest-now",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "responseData": "firstEntryJson",
+        "options": {}
+      },
+      "id": "171e12e2-a073-59ef-9c60-5c6cb210a30a",
+      "name": "Run now",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        180
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "npAdminHeader001",
+          "name": "Automation admin key"
+        }
+      },
+      "webhookId": "3c9e7d12-6a40-4f5b-b2d8-91e0c4a7f302"
+    },
+    {
+      "parameters": {
+        "resource": "row",
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "enquiries"
+        },
+        "returnAll": true
+      },
+      "id": "52891573-a4ef-5636-8c5c-a08959226370",
+      "name": "All enquiries",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        80
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Enquiries since the start of the previous business day, grouped for the morning huddle.\nconst rows = $input.all().map(i => i.json).filter(r => r.reference);\nconst now = new Date();\nconst since = new Date(now);\nsince.setDate(now.getDate() - (now.getDay() === 1 ? 3 : 1));   // Monday's digest covers the weekend\nsince.setHours(8, 0, 0, 0);\nconst fresh = rows.filter(r => new Date(r.received_at) >= since).sort((a, b) => a.received_at < b.received_at ? -1 : 1);\nconst esc = s => String(s ?? '').replace(/[&<>\"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;' }[c]));\nconst byService = {};\nfor (const r of fresh) byService[r.service] = (byService[r.service] ?? 0) + 1;\nconst urgent = fresh.filter(r => r.priority === 'urgent');\nconst time = d => new Date(d).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', hour: 'numeric', minute: '2-digit' });\nconst rowsHtml = fresh.map(r => `<tr${r.priority === 'urgent' ? ' style=\"background:#fbe3dc\"' : ''}>\n  <td style=\"padding:4px 8px\">${time(r.received_at)}</td><td style=\"padding:4px 8px\">${esc(r.name)}${r.repeat ? ' (repeat)' : ''}</td>\n  <td style=\"padding:4px 8px\">${esc(r.phone)}</td><td style=\"padding:4px 8px\">${esc(r.service)}</td>\n  <td style=\"padding:4px 8px\">${r.priority === 'urgent' ? '<b>urgent</b>' : ''}</td></tr>`).join('');\nconst html = `<div style=\"font:14px/1.5 Arial,sans-serif;color:#222\">\n  <p><b>${fresh.length}</b> new enquiries since ${time(since)}${urgent.length ? `, <b style=\"color:#8f2410\">${urgent.length} urgent</b>` : ''}.</p>\n  <p>${Object.entries(byService).map(([s, n]) => `${esc(s)}: ${n}`).join(' &middot; ') || 'No enquiries.'}</p>\n  ${fresh.length ? `<table style=\"border-collapse:collapse;border:1px solid #ddd\"><tr style=\"background:#f3f3f3\"><th style=\"padding:4px 8px;text-align:left\">Received</th><th style=\"padding:4px 8px;text-align:left\">Name</th><th style=\"padding:4px 8px;text-align:left\">Phone</th><th style=\"padding:4px 8px;text-align:left\">Service</th><th></th></tr>${rowsHtml}</table>` : ''}</div>`;\nreturn [{ json: { count: fresh.length, urgent: urgent.length, html,\n                  subject: `${fresh.length} new enquiries${urgent.length ? ` (${urgent.length} urgent)` : ''}: ${now.toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'long', day: 'numeric', month: 'long' })}` } }];"
+      },
+      "id": "91211cb5-ad15-5827-8b47-ea68de20908e",
+      "name": "Build digest",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Northside Physio <enquiries@northsidephysio.example>",
+        "toEmail": "practice.manager@northsidephysio.example",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "73e6c05b-1d86-5bb0-a75d-bae8b09006ba",
+      "name": "Email the practice manager",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        680,
+        80
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "npSmtpLocal00001",
+          "name": "Clinic SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Weekdays 8:00": {
+      "main": [
+        [
+          {
+            "node": "All enquiries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run now": {
+      "main": [
+        [
+          {
+            "node": "All enquiries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All enquiries": {
+      "main": [
+        [
+          {
+            "node": "Build digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build digest": {
+      "main": [
+        [
+          {
+            "node": "Email the practice manager",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

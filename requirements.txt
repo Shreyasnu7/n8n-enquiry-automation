@@ -1,0 +1,4 @@
+httpx
+aiosmtpd
+psutil
+pytest
